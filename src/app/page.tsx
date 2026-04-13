@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import BentoCard from "@/components/ui/BentoCard";
 import MagneticButton from "@/components/ui/MagneticButton";
-import { ArrowLeft, ArrowUpRight, Gauge, LinkBreak, Star } from "@phosphor-icons/react";
+import ServicesSection from "@/components/ui/ServicesSection";
+import { ArrowUpRight } from "@phosphor-icons/react";
 import HeroShader from "@/components/ui/HeroShader";
 
 export default function Home() {
@@ -76,42 +76,7 @@ export default function Home() {
       {/* 
         SERVICES SECTION (Parallax Bento Grid) 
       */}
-      <section className="py-32 px-4 md:px-8 bg-zinc-100/50">
-        <div className="max-w-7xl mx-auto flex flex-col gap-16">
-          <div className="flex flex-col gap-4 max-w-2xl">
-            <span className="text-sm font-bold tracking-widest uppercase text-emerald-600">Our Services</span>
-            <h2 className="text-4xl md:text-5xl font-heading font-semibold tracking-tighter">
-              Premium quality. <br/> <span className="text-zinc-500"> measurable results.</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <BentoCard delay={0.1} className="flex flex-col justify-between min-h-[400px]">
-              <div className="bg-white/50 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 border border-zinc-100 shadow-sm">
-                <Star size={32} weight="duotone" className="text-zinc-800" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-heading font-semibold mb-4">Web Design that Converts</h3>
-                <p className="text-zinc-500 leading-relaxed font-medium">
-                  We don't just make things look pretty. Our premium designs are meticulously crafted to build trust instantly and channel your visitors into a pipeline of high-value inquiries, regardless of your industry.
-                </p>
-              </div>
-            </BentoCard>
-
-            <BentoCard delay={0.2} className="flex flex-col justify-between min-h-[400px]">
-              <div className="bg-white/50 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 border border-zinc-100 shadow-sm">
-                <Gauge size={32} weight="duotone" className="text-zinc-800" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-heading font-semibold mb-4">SEO & Performance</h3>
-                <p className="text-zinc-500 leading-relaxed font-medium">
-                  Our sites score 90+ on Google's Lighthouse tests for speed, quality, and security. We build lightweight, lightning-fast architecture that helps you rank higher in search results naturally.
-                </p>
-              </div>
-            </BentoCard>
-          </div>
-        </div>
-      </section>
+      <ServicesSection />
 
       {/* 
         SHOWCASE SNIPPET 
