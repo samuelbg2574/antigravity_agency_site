@@ -153,6 +153,11 @@ export default function HeroShader() {
   const currentMouseRef = useRef({ x: 0, y: 0 }); // Lerped mouse
 
   useEffect(() => {
+    // The shader is CSS-hidden below md breakpoint (768px) but React still mounts
+    // the component. Skip the WebGL setup entirely on mobile to avoid burning
+    // CPU on shader compilation and the animation RAF loop.
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });

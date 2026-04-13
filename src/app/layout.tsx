@@ -29,6 +29,13 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${outfit.variable} antialiased bg-zinc-50 text-zinc-950`}
     >
+      <head>
+        {/* Preconnect to external origins used by iframes and images */}
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://george-photo-site.vercel.app" />
+        <link rel="preconnect" href="https://agency-site-brown-two.vercel.app" />
+        <link rel="preconnect" href="https://touchpointjudo-mockup.vercel.app" />
+      </head>
       <body className="min-h-[100dvh] flex flex-col font-sans selection:bg-zinc-950 selection:text-white">
         <Navigation />
         <main className="flex-1 flex flex-col pt-24">{children}</main>

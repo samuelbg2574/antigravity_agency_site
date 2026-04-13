@@ -62,7 +62,7 @@ export default function Navigation() {
         </div>
 
         {/* Mobile menu icon */}
-        <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/40 backdrop-blur-md border border-white/20 shadow-sm">
+        <button aria-label="Open menu" className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/40 backdrop-blur-md border border-white/20 shadow-sm">
           <List size={20} weight="bold" />
         </button>
       </div>

@@ -24,13 +24,13 @@ export default function Footer() {
 
         <div className="flex gap-16 md:gap-24">
           <div className="flex flex-col gap-4 text-sm font-medium">
-            <span className="text-zinc-400 uppercase tracking-widest text-xs font-bold mb-2">Agency</span>
+            <span className="text-zinc-500 uppercase tracking-widest text-xs font-bold mb-2">Agency</span>
             <Link href="/" className="text-zinc-600 hover:text-zinc-950 transition-colors">Home</Link>
             <Link href="/work" className="text-zinc-600 hover:text-zinc-950 transition-colors">Our Work</Link>
             <Link href="/about" className="text-zinc-600 hover:text-zinc-950 transition-colors">About Us</Link>
           </div>
           <div className="flex flex-col gap-4 text-sm font-medium">
-            <span className="text-zinc-400 uppercase tracking-widest text-xs font-bold mb-2">Connect</span>
+            <span className="text-zinc-500 uppercase tracking-widest text-xs font-bold mb-2">Connect</span>
             <a href="#" className="text-zinc-600 hover:text-zinc-950 transition-colors">Twitter</a>
             <a href="#" className="text-zinc-600 hover:text-zinc-950 transition-colors">LinkedIn</a>
             <a href="#" className="text-zinc-600 hover:text-zinc-950 transition-colors">Instagram</a>

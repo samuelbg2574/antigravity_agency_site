@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight } from "@phosphor-icons/react";
@@ -42,6 +42,24 @@ export default function ServicesSection() {
     offset: ["start end", "end start"],
   });
   const imageY = useTransform(scrollYProgress, [0, 1], ["4%", "-4%"]);
+
+  // Defer iframe loading until the section is near the viewport.
+  const [iframeReady, setIframeReady] = useState(false);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIframeReady(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: "400px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <section
@@ -88,11 +106,12 @@ export default function ServicesSection() {
                   {/* iframe preview scaled to fill */}
                   <div className="w-full h-full relative">
                     <iframe
-                      src={activeService.iframeUrl}
+                      src={iframeReady ? activeService.iframeUrl : undefined}
                       title={`${activeService.title} portfolio preview`}
                       className="absolute top-0 left-0 w-[200%] h-[200%] border-0 pointer-events-none"
                       style={{ transform: "scale(0.5)", transformOrigin: "top left" }}
                       tabIndex={-1}
+                      loading="lazy"
                     />
                     {/* Overlay to prevent iframe interaction */}
                     <div className="absolute inset-0 z-10" aria-hidden="true" />
@@ -119,7 +138,7 @@ export default function ServicesSection() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
             className="flex flex-col justify-center"
           >
-            <div className="flex flex-col" role="tablist" aria-label="Services">
+            <div className="flex flex-col" aria-label="Services">
               {services.map((service, idx) => {
                 const isActive = service.id === activeId;
                 return (
@@ -127,10 +146,9 @@ export default function ServicesSection() {
                     {/* Thin top divider */}
                     <div className="h-px w-full bg-zinc-200" aria-hidden="true" />
 
-                    {/* Service header button */}
+                    {/* Service header button — accordion pattern */}
                     <button
-                      role="tab"
-                      aria-selected={isActive}
+                      aria-expanded={isActive}
                       aria-controls={`panel-${service.id}`}
                       id={`tab-${service.id}`}
                       onClick={() => setActiveId(service.id)}
@@ -162,7 +180,7 @@ export default function ServicesSection() {
                     {/* Expandable description panel */}
                     <div
                       id={`panel-${service.id}`}
-                      role="tabpanel"
+                      role="region"
                       aria-labelledby={`tab-${service.id}`}
                     >
                       <AnimatePresence initial={false}>
