@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import MagneticButton from "@/components/ui/MagneticButton";
 import ServicesSection from "@/components/ui/ServicesSection";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import SelectedWorkSection from "@/components/ui/SelectedWorkSection";
+import { ArrowUpRightIcon } from "@phosphor-icons/react";
 import HeroShader from "@/components/ui/HeroShader";
 
 export default function Home() {
@@ -53,7 +54,7 @@ export default function Home() {
               </Link>
               <Link href="/work" className="group flex items-center gap-2 text-zinc-500 font-medium hover:text-zinc-900 transition-colors">
                 View our work 
-                <ArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                <ArrowUpRightIcon className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </Link>
             </motion.div>
           </motion.div>
@@ -78,57 +79,10 @@ export default function Home() {
       */}
       <ServicesSection />
 
-      {/* 
-        SHOWCASE SNIPPET 
+      {/*
+        SELECTED WORK
       */}
-      <section className="py-32 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto flex flex-col gap-16">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
-            <div className="flex flex-col gap-4 max-w-2xl">
-              <h2 className="text-4xl md:text-5xl font-heading font-semibold tracking-tighter">
-                Selected Work 
-              </h2>
-              <p className="text-zinc-500 font-medium">Browse a few of our recently completed premium builds.</p>
-            </div>
-            <Link href="/work">
-              <MagneticButton variant="secondary">
-                <span>View Full Portfolio</span>
-              </MagneticButton>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[ 
-              { title: "George Photo", role: "Portfolio Site", url: "https://george-photo-site.vercel.app/" },
-              { title: "Touchpoint Judo", role: "Sports Club Mockup", url: "https://touchpointjudo-mockup.vercel.app/" },
-              { title: "Agency Brown Two", role: "Creative Agency", url: "https://agency-site-brown-two.vercel.app/" }
-            ].map((work, idx) => (
-              <motion.div 
-                key={work.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: idx * 0.1, type: "spring" }}
-                className="group relative flex flex-col gap-4"
-              >
-                <div className="w-full aspect-[4/3] bg-zinc-100 rounded-[2rem] overflow-hidden relative border border-slate-200 shadow-sm flex items-center justify-center">
-                  <div className="absolute inset-0 bg-white/20 group-hover:bg-transparent transition-colors z-10" />
-                  <iframe 
-                    src={work.url} 
-                    className="w-[150%] h-[150%] scale-[0.67] origin-top-left border-0 pointer-events-none" 
-                    title={work.title}
-                  />
-                  <div className="absolute inset-0 z-20" /> {/* Overlay to prevent interactions */}
-                </div>
-                <div>
-                  <h4 className="font-heading font-semibold text-lg">{work.title}</h4>
-                  <p className="text-sm font-medium text-zinc-500">{work.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <SelectedWorkSection />
 
     </div>
   );

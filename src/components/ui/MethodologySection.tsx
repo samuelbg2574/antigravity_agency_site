@@ -14,6 +14,9 @@ interface Step {
   visual: { url: string; label: string };
 }
 
+// Single site shown throughout — loaded once so it's never slow
+const VISUAL_URL = "https://george-photo-site.vercel.app/";
+
 const steps: Step[] = [
   {
     number: "01",
@@ -22,7 +25,7 @@ const steps: Step[] = [
       "We dive deep into your business objectives, target audience, and market positioning. This ensures everything we design is rooted in intent — not just aesthetics.",
 
     visual: {
-      url: "https://george-photo-site.vercel.app/",
+      url: VISUAL_URL,
       label: "George Photo — discovery phase",
     },
   },
@@ -33,8 +36,8 @@ const steps: Step[] = [
       "We craft premium, high-converting interfaces. Rejecting generic templates, we focus on bespoke typography, sophisticated colour palettes, and intuitive user flows.",
 
     visual: {
-      url: "https://agency-site-brown-two.vercel.app/",
-      label: "Agency Brown — design phase",
+      url: VISUAL_URL,
+      label: "George Photo — design phase",
     },
   },
   {
@@ -44,8 +47,8 @@ const steps: Step[] = [
       "Our engineers construct the design using modern frameworks — Next.js, optimised for 90+ Lighthouse scores across speed, accessibility, and SEO.",
 
     visual: {
-      url: "https://touchpointjudo-mockup.vercel.app/",
-      label: "Touchpoint Judo — build phase",
+      url: VISUAL_URL,
+      label: "George Photo — build phase",
     },
   },
   {
@@ -55,8 +58,8 @@ const steps: Step[] = [
       "We launch the site, monitor early performance, and attend to final touch-ups — ensuring a flawless experience across every device and screen.",
 
     visual: {
-      url: "https://agency-site-brown-two.vercel.app/",
-      label: "Agency Brown — delivery phase",
+      url: VISUAL_URL,
+      label: "George Photo — delivery phase",
     },
   },
 ];
@@ -75,7 +78,7 @@ export default function MethodologySection() {
     target: sectionRef,
     // start: section top reaches 80% down the viewport (just entering view)
     // end:   section bottom reaches 20% down the viewport (almost scrolled past)
-    offset: ["start 0.8", "end 0.2"],
+    offset: ["start 0.4", "end 0.8"],
   });
 
   // Continuous rail fill — scaleY from top so it grows downward
@@ -203,8 +206,8 @@ export default function MethodologySection() {
                         color: isActive
                           ? "#71717a"
                           : isPast
-                          ? "#a1a1aa"
-                          : "#d4d4d8",
+                            ? "#a1a1aa"
+                            : "#d4d4d8",
                       }}
                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                       className="text-[11px] font-mono tracking-[0.18em] leading-none select-none"
@@ -218,8 +221,8 @@ export default function MethodologySection() {
                         color: isActive
                           ? "#09090b"
                           : isPast
-                          ? "#71717a"
-                          : "#a1a1aa",
+                            ? "#71717a"
+                            : "#a1a1aa",
                       }}
                       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                       className="text-3xl md:text-4xl font-heading font-semibold tracking-tight leading-tight"
@@ -250,41 +253,31 @@ export default function MethodologySection() {
 
               {/* Visual container — aspect-[3/4] matches left column */}
               <div className="relative w-full aspect-[3/4] rounded-[2rem] overflow-hidden bg-zinc-100 border border-zinc-200/70 shadow-[0_32px_64px_-20px_rgba(0,0,0,0.10)]">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeStep}
-                    initial={{ opacity: 0, filter: "blur(8px)", scale: 1.03 }}
-                    animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-                    exit={{ opacity: 0, filter: "blur(6px)", scale: 0.98 }}
-                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute inset-0"
-                  >
-                    <iframe
-                      src={steps[activeStep].visual.url}
-                      title={steps[activeStep].visual.label}
-                      className="absolute top-0 left-0 border-0 pointer-events-none"
-                      style={{
-                        width: "200%",
-                        height: "200%",
-                        transform: "scale(0.5)",
-                        transformOrigin: "top left",
-                      }}
-                      tabIndex={-1}
-                      aria-hidden="true"
-                    />
-                    {/* Click blocker */}
-                    <div className="absolute inset-0 z-10" aria-hidden="true" />
-                    {/* Vignette */}
-                    <div
-                      className="absolute inset-0 z-20 pointer-events-none"
-                      style={{
-                        background:
-                          "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.06) 100%)",
-                      }}
-                      aria-hidden="true"
-                    />
-                  </motion.div>
-                </AnimatePresence>
+                {/* Single always-mounted iframe — loads once, never re-fetches */}
+                <iframe
+                  src={VISUAL_URL}
+                  title="George Photo site"
+                  className="absolute top-0 left-0 border-0 pointer-events-none"
+                  style={{
+                    width: "200%",
+                    height: "200%",
+                    transform: "scale(0.5)",
+                    transformOrigin: "top left",
+                  }}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                />
+                {/* Click blocker */}
+                <div className="absolute inset-0 z-10" aria-hidden="true" />
+                {/* Vignette */}
+                <div
+                  className="absolute inset-0 z-20 pointer-events-none"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.06) 100%)",
+                  }}
+                  aria-hidden="true"
+                />
 
                 {/* Step label badge — bottom-left */}
                 <div className="absolute bottom-5 left-5 z-30" aria-hidden="true">
