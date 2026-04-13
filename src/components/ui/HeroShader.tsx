@@ -16,13 +16,14 @@ uniform vec2 u_resolution;
 uniform float u_time;
 uniform vec2 u_mouse;
 
-// Palette A - Soft silver / graphite
-const vec3 c1 = vec3(245.0, 245.0, 243.0) / 255.0; // #F5F5F3
-const vec3 c2 = vec3(231.0, 231.0, 226.0) / 255.0; // #E7E7E2
-const vec3 c3 = vec3(207.0, 207.0, 212.0) / 255.0; // #CFCFD4
-const vec3 c4 = vec3(169.0, 171.0, 179.0) / 255.0; // #A9ABB3
-const vec3 c5 = vec3(111.0, 115.0, 124.0) / 255.0; // #6F737C
-const vec3 c6 = vec3(42.0,  45.0,  51.0)  / 255.0; // #2A2D33
+// Palette A - Premium Dark Graphite & Silver
+const vec3 c1 = vec3(218.0, 220.0, 224.0) / 255.0; // #DADCE0 - Soft highlight
+const vec3 c2 = vec3(185.0, 190.0, 199.0) / 255.0; // #B9BEC7 - Light silver
+const vec3 c3 = vec3(140.0, 146.0, 157.0) / 255.0; // #8C929D - Cool grey
+const vec3 c4 = vec3(102.0, 109.0, 120.0) / 255.0; // #666D78 - Steel grey
+const vec3 c5 = vec3(68.0,  73.0,  82.0)  / 255.0; // #444952 - Graphite
+const vec3 c6 = vec3(42.0,  46.0,  53.0)  / 255.0; // #2A2E35 - Deep graphite
+const vec3 c7 = vec3(24.0,  26.0,  31.0)  / 255.0; // #181A1F - Near-black
 
 // Simplex 3D Noise by Ian McEwan, Ashima Arts
 vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
@@ -78,41 +79,67 @@ void main() {
     vec2 uv = gl_FragCoord.xy / mx;
     vec2 center = u_resolution.xy / mx * 0.5;
 
-    // Mouse coordinates mapped to match
+    // Mouse coordinates
     vec2 mouse = u_mouse / mx;
-    // Mirror Y to match gl_FragCoord space natively, or let React handle it. React gives Y from top, gl_Fragcoord is Y from bottom.
-    // We already handle Y flip in React so u_mouse is correct bottom-up.
-    
-    // Create an offset influenced by mouse
     vec2 toMouse = mouse - center;
-    // Scale down mouse influence so it's subtle, parallax-like drift
-    vec2 offset = toMouse * 0.3;
+    vec2 offset = toMouse * 0.15; // More subtle mouse interaction
     
-    vec2 pos = uv - offset;
+    // Position relative to center
+    vec2 pos = uv - center - offset;
 
-    // FBM Domain warping
-    float n1 = snoise(vec3(pos * 2.5, u_time * 0.2));
-    float n2 = snoise(vec3(pos * 4.0 + n1 * 0.5, u_time * 0.3));
-    float n3 = snoise(vec3(pos * 1.5 + n2 * 0.5, u_time * 0.15));
+    // Rotate field to create diagonal from upper-right to lower-left
+    float angle = -0.7; // Approx -40 degrees for a graceful lean
+    float s = sin(angle);
+    float c = cos(angle);
+    mat2 rot = mat2(c, -s, s, c);
+    vec2 rPos = pos * rot;
 
-    // Smooth circular mask from actual center
-    float dist = length(uv - center);
-    // Tweak to create an organic shape combined with noise
-    float radius = 0.35 + n3 * 0.1;
-    float mask = smoothstep(radius + 0.15, radius - 0.1, dist);
+    // Extreme anisotropic scaling: heavily stretched along y-axis
+    // x is across the streak, y is along the streak
+    vec2 stretchPos = vec2(rPos.x * 6.5, rPos.y * 0.7);
 
-    // Map noise into color palette
-    float t = n3 * 0.5 + 0.5; // 0.0 to 1.0
+    // Directional domain warping - flows completely along the y axis (stroke direction)
+    float n1 = snoise(vec3(rPos.x * 4.0, rPos.y * 1.5 - u_time * 0.15, u_time * 0.08));
+    float n2 = snoise(vec3(rPos.x * 2.0 + n1 * 0.5, rPos.y * 1.0, u_time * 0.1));
+    float n3 = snoise(vec3(rPos.x * 1.0 + n2 * 0.3, rPos.y * 0.5 - u_time * 0.05, u_time * 0.04));
+
+    // Distort the stretched position
+    vec2 distortedPos = stretchPos + vec2(n1 * 0.3, n2 * 0.4);
+
+    // Distance field for atmospheric streak core
+    float dist = length(distortedPos);
     
-    vec3 color = mix(c1, c2, smoothstep(0.0, 0.2, t));
-    color = mix(color, c3, smoothstep(0.2, 0.4, t));
+    // Smooth feathering
+    float mask = smoothstep(1.8, 0.0, dist); // Broad, invisible structural mist
+    float core = smoothstep(0.4, 0.0, dist); // Inner luminous core
+
+    // Tonal variation using the noise field
+    float t = n3 * 0.5 + 0.5;
+    
+    // Map dark graphite to lighter silver based on noise/thickness
+    vec3 color = mix(c7, c6, smoothstep(0.0, 0.2, t));
+    color = mix(color, c5, smoothstep(0.2, 0.4, t));
     color = mix(color, c4, smoothstep(0.4, 0.7, t));
-    color = mix(color, c5, smoothstep(0.7, 0.9, t));
-    color = mix(color, c6, smoothstep(0.9, 1.0, t));
+    color = mix(color, c3, smoothstep(0.7, 0.9, t));
+    color = mix(color, c2, smoothstep(0.9, 1.0, t));
 
-    // Subtle edge fade to pure white (since it's a light background) or to alpha
-    // We will use alpha to blend naturally with DOM backgrounds
-    gl_FragColor = vec4(color, mask);
+    // Boost the core slightly with a softer highlight
+    color = mix(color, vec3(c1), core * 0.6);
+
+    // Add explicit container edge fading (so it never hits a sharp harsh crop)
+    // Canvas dimensions relative coordinates (0.0 to 1.0)
+    vec2 canvasUv = gl_FragCoord.xy / u_resolution.xy;
+    
+    // Very broad left-side fade so it feels embedded into the layout background
+    float leftFade = smoothstep(0.0, 0.6, canvasUv.x);
+    // Standard soft fades for other edges
+    float rightFade = smoothstep(1.0, 0.8, canvasUv.x);
+    float topBottomFade = smoothstep(0.0, 0.25, canvasUv.y) * smoothstep(1.0, 0.75, canvasUv.y);
+    
+    float edgeMask = leftFade * rightFade * topBottomFade;
+
+    // Output with pure alpha blend into the background gradient
+    gl_FragColor = vec4(color, mask * edgeMask);
 }
 `;
 
@@ -260,11 +287,7 @@ export default function HeroShader() {
   return (
     <canvas 
       ref={canvasRef} 
-      className="w-full h-full pointer-events-none absolute inset-0 mix-blend-multiply opacity-90"
-      style={{
-        maskImage: "radial-gradient(circle at center, black 40%, transparent 70%)",
-        WebkitMaskImage: "radial-gradient(circle at center, black 40%, transparent 70%)"
-      }}
+      className="w-[140%] h-[140%] pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-95 mix-blend-multiply"
     />
   );
 }
