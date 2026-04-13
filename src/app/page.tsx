@@ -5,6 +5,7 @@ import Link from "next/link";
 import BentoCard from "@/components/ui/BentoCard";
 import MagneticButton from "@/components/ui/MagneticButton";
 import { ArrowLeft, ArrowUpRight, Gauge, LinkBreak, Star } from "@phosphor-icons/react";
+import HeroShader from "@/components/ui/HeroShader";
 
 export default function Home() {
   return (
@@ -63,11 +64,9 @@ export default function Home() {
             transition={{ delay: 0.4, type: "spring", stiffness: 80, damping: 20 }}
             className="hidden md:flex md:col-span-4 items-center justify-center relative"
           >
-            {/* Visual element (Orb or abstraction) */}
-            <div className="w-64 h-64 rounded-full bg-gradient-to-tr from-zinc-200 to-white shadow-[0_0_80px_rgba(0,0,0,0.05)] border border-white flex items-center justify-center relative z-10 animate-[pulse_8s_ease-in-out_infinite] p-8">
-                <div className="w-full h-full rounded-full border border-zinc-100 shadow-inner flex items-center justify-center">
-                  <Star size={48} weight="fill" className="text-zinc-200" />
-                </div>
+            {/* Shader Visual element */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none z-10 hidden md:block">
+              <HeroShader />
             </div>
           </motion.div>
 
